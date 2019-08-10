@@ -53,19 +53,18 @@ class Database():
 
     def get_notes_list(self, author_id):
         query = (
-            "SELECT id, title, creation_date, content "
+            "SELECT id, title, creation_date "
             "FROM notes WHERE author_id = %s"
         )
         data = (author_id,)
         self.execute_query(query, data)
         notes = []
-        for (id, title, creation_date, content) in self.cursor:
+        for (id, title, creation_date) in self.cursor:
             notes.append(
                 {
                     "id":               id,
                     "title":            title,
                     "creation_date":    creation_date,
-                    "content":          content
                 }
             )
         return notes
