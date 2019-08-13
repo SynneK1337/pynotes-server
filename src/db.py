@@ -91,6 +91,24 @@ class Database():
                 "content":          content
             }
 
+    def register(self, username, password):
+        query = (
+            "INSERT INTO accounts "
+            "VALUES(NULL, %(username)s, %(password)s)"
+        )
+        data = {
+            "username": username,
+            "password": password
+        }
+        try:
+            self._execute_query(query, data)
+
+        except mysql.connector.Error:
+            return False
+
+        else:
+            return True
+
     def login(self, username, password):
         query = (
             "SELECT EXISTS(SELECT 1 FROM accounts WHERE "

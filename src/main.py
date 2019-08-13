@@ -14,6 +14,28 @@ class Handler():
         content = await content.read()
         content = content.decode("utf-8")
         return json.loads(content)
+    async def handle_register(self, request):
+        try:
+            data = await self._json_content(request.content)
+            username = data["username"]
+            password = data["password"]
+            db.register(username, password)
+
+        except Exception as err:
+            return web.json_response(
+                {
+                    "status": "error",
+                    "msg": str(err)
+                },  status=400
+            )
+
+        else:
+            return web.json_response(
+                    {
+                        "status":   "OK",
+                        "msg":      "Account created successfully"
+                    },  status=200
+            )
 
     async def handle_login(self, request):
         try:
@@ -182,7 +204,7 @@ class Handler():
                     {
                         "status":   "OK",
                         "msg":      "note removed successfully"
-                    },  status=200   
+                    },  status=200
                 )
             else:
                 db.remove_token(token)
@@ -202,7 +224,8 @@ app.add_routes([
     web.post("/createNote", handler.handle_create_note),
     web.post("/getNotesList", handler.handle_get_notes_list),
     web.post("/removeNote", handler.handle_remove_note),
-    web.post("/login", handler.handle_login)
+    web.post("/login", handler.handle_login),
+    web.post("/register", handler.handle_register)
 ])
 
 if __name__ == "__main__":
