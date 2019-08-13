@@ -126,11 +126,48 @@ class Handler():
                     },  status=401
                 )
 
+    async def handle_get_note(self, request):
+        try:
+            data = await self._json_content(request.content)
+            note_id = data["note_id"]
+            user_id = db.get_user_id(data["username"])
+            token = data["token"]
+            token_expiration_date = db.get_token_expiration_date(token)
+
+        except Exception as err:
+            return web.json_response(
+                {
+                    "status": "error",
+                    "msg": str(err)
+                }, status=400
+            )
+
+        else:
+            if Auth().verify_token(token, token_expiration_date):
+                note = db.get_note(note_id, user_id)
+                note["creation_date"] = note["creation_date"].timestamp()
+                return web.json_response(
+                    {
+                        "status":   "OK",
+                        "note":     note
+                    }, status=200
+                )
+
+            else:
+                db.remove_token(token)
+                return web.json_response(
+                    {
+                        "status":   "error",
+                        "msg":      "Authorization failed"
+                    }, status=401
+                )
+
 db = Database("localhost", "root", "3dSynN3K", "pyNotes")
 handler = Handler()
 
 app = web.Application()
 app.add_routes([
+    web.post("/getNote", handler.handle_get_note),
     web.post("/createNote", handler.handle_create_note),
     web.post("/getNotesList", handler.handle_get_notes_list),
     web.post("/login", handler.handle_login)
