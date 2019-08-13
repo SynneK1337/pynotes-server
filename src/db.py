@@ -57,7 +57,7 @@ class Database():
     def get_notes_list(self, user_id):
         query = (
             "SELECT id, title, creation_date "
-            "FROM notes WHERE author_id = %s"
+            "FROM notes WHERE user_id = %s"
         )
         data = (user_id,)
         self._execute_query(query, data)
