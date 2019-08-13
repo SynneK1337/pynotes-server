@@ -149,19 +149,6 @@ class Database():
         for expiration_date in self._cursor:
             return expiration_date[0]
 
-    # chyba niepotrzebne gowno
-"""
-    def get_user_tokens(self, user_id):
-        query = (
-            "SELECT token FROM tokens where user_id=%(userid)s"
-        )
-        data = {"user_id": user_id}
-
-        self._execute_query(query, data)
-        for token in self._cursor:
-            return token
-"""
-
 if __name__ == "__main__":
     from datetime import datetime
     db = Database("localhost", "root", "3dSynN3K", "pynotes")
