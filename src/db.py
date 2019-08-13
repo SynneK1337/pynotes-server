@@ -34,7 +34,7 @@ class Database():
         else:
             try:
                 self.database.commit()
-            except mysql.connector.Error as e:
+            except mysql.connector.Error as err:
                 print(err)
 
     def create_note(self, title, creation_date, author_id, content):
