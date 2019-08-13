@@ -72,9 +72,16 @@ class Database():
             )
         return notes
 
-    def get_note(self, id, current_date):
-        query = ("SELECT title, creation_date, content FROM notes where id=%s")
-        data = (id,)
+    def get_note(self, note_id, user_id):
+        query = (
+            "SELECT title, creation_date, content FROM notes "
+            "WHERE id=%(note_id)s AND user_id=%(user_id)s"
+        )
+        data = {
+                "note_id": note_id,
+                "user_id": user_id
+        }
+
         self._execute_query(query, data)
         for (title, creation_date, content) in self._cursor:
             return {
