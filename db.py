@@ -14,10 +14,10 @@ class Database():
             )
         except mysql.connector.Error as err:
             print(err)
-        self.cursor = self.database.cursor()
+        self._cursor = self.database.cursor()
 
         # Create tables if not exists
-        self.execute_query(
+        self._execute_query(
             "CREATE TABLE IF NOT EXISTS notes ("
             "id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, "
             "title VARCHAR(255) NOT NULL, "
@@ -26,13 +26,16 @@ class Database():
             "content TEXT)", None
         )
 
-    def execute_query(self, query, data):
+    def _execute_query(self, query, data):
         try:
-            self.cursor.execute(query, data)
+            self._cursor.execute(query, data)
         except mysql.connector.Error as err:
             print(err)
         else:
-            self.database.commit()
+            try:
+                self.database.commit()
+            except mysql.connector.Error as e:
+                print(err)
 
     def create_note(self, title, creation_date, author_id, content):
         query = (
@@ -49,17 +52,17 @@ class Database():
             "content":          content
         }
 
-        self.execute_query(query, data)
+        self._execute_query(query, data)
 
-    def get_notes_list(self, author_id):
+    def get_notes_list(self, user_id):
         query = (
             "SELECT id, title, creation_date "
             "FROM notes WHERE author_id = %s"
         )
-        data = (author_id,)
-        self.execute_query(query, data)
+        data = (user_id,)
+        self._execute_query(query, data)
         notes = []
-        for (id, title, creation_date) in self.cursor:
+        for (id, title, creation_date) in self._cursor:
             notes.append(
                 {
                     "id":               id,
@@ -69,14 +72,90 @@ class Database():
             )
         return notes
 
-    def get_note(self, id):
+    def get_note(self, id, current_date):
         query = ("SELECT title, creation_date, content FROM notes where id=%s")
         data = (id,)
-        self.execute_query(query, data)
-        for (title, creation_date, content) in self.cursor:
+        self._execute_query(query, data)
+        for (title, creation_date, content) in self._cursor:
             return {
+
                 "title":            title,
                 "creation_date":    creation_date,
                 "content":          content
             }
 
+    def login(self, username, password):
+        query = (
+            "SELECT EXISTS(SELECT 1 FROM accounts WHERE "
+            "username=%(username)s AND password=%(password)s)"
+        )
+        data = {
+            "username": username,
+            "password": password
+        }
+
+        self._execute_query(query, data)
+        return (1,) in self._cursor
+
+    def get_user_id(self, username):
+        query = (
+            "SELECT id FROM accounts WHERE username=%(username)s"
+        )
+        data = {"username": username}
+
+        self._execute_query(query, data)
+        for id in self._cursor:
+            return int(id[0])
+
+    def add_token(self, user_id, token, expiration_date):
+        query = (
+            "INSERT INTO tokens "
+            "VALUES(%(user_id)s, %(token)s, %(expiration_date)s)"
+        )
+        data = {
+            "user_id":          user_id,
+            "token":            token,
+            "expiration_date":  expiration_date
+        }
+
+        self._execute_query(query, data)
+
+    def remove_token(self, token):
+        query = (
+            "DELETE FROM tokens WHERE token=%(token)s"
+        )
+        data = {
+            "token": token
+        }
+
+        self._execute_query(query, data)
+
+    def get_token_expiration_date(self, token):
+        query = (
+            "SELECT expiration_date FROM tokens "
+            "WHERE token=%(token)s"
+        )
+        data = {"token": token}
+
+        self._execute_query(query, data)
+
+        for expiration_date in self._cursor:
+            return expiration_date[0]
+
+    # chyba niepotrzebne gowno
+"""
+    def get_user_tokens(self, user_id):
+        query = (
+            "SELECT token FROM tokens where user_id=%(userid)s"
+        )
+        data = {"user_id": user_id}
+
+        self._execute_query(query, data)
+        for token in self._cursor:
+            return token
+"""
+
+if __name__ == "__main__":
+    from datetime import datetime
+    db = Database("localhost", "root", "3dSynN3K", "pynotes")
+    db.login("synnek", "3dSynN3K")
