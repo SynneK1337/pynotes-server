@@ -149,6 +149,18 @@ class Database():
         for expiration_date in self._cursor:
             return expiration_date[0]
 
+    def remove_note(self, note_id, user_id):
+        query = (
+            "DELETE FROM notes WHERE "
+            "id=%(note_id)s AND user_id=%(user_id)s"
+        )
+        data = {
+            "note_id": note_id,
+            "user_id": user_id
+        }
+
+        self._execute_query(query, data)
+
 if __name__ == "__main__":
     from datetime import datetime
     db = Database("localhost", "root", "3dSynN3K", "pynotes")
