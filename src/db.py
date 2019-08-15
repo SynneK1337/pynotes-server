@@ -110,6 +110,8 @@ class Database():
             return True
 
     def login(self, username, password):
+        self.remove_token_by_user_id(self.get_user_id(username))
+
         query = (
             "SELECT EXISTS(SELECT 1 FROM accounts WHERE "
             "username=%(username)s AND password=%(password)s)"
@@ -142,6 +144,12 @@ class Database():
             "token":            token,
             "expiration_date":  expiration_date
         }
+
+        self._execute_query(query, data)
+
+    def remove_token_by_user_id(self, user_id):
+        query = ("DELETE FROM tokens WHERE user_id=%(user_id)s")
+        data = {"user_id": user_id}
 
         self._execute_query(query, data)
 
