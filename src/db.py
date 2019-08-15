@@ -187,6 +187,20 @@ class Database():
 
         self._execute_query(query, data)
 
+    def modify_note(self, note_id, user_id, title, content):
+        query = (
+            "UPDATE notes SET title=%(title)s, content=%(content)s "
+            "WHERE id=%(note_id)s AND user_id=%(user_id)s"
+        )
+        data = {
+            "note_id":  note_id,
+            "user_id":  user_id,
+            "title":    title,
+            "content":  content
+        }
+
+        self._execute_query(query, data)
+
 if __name__ == "__main__":
     from datetime import datetime
     db = Database("localhost", "root", "3dSynN3K", "pynotes")
