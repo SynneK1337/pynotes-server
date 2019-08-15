@@ -223,7 +223,7 @@ app.add_routes([
     web.post("/getNote", handler.handle_get_note),
     web.post("/createNote", handler.handle_create_note),
     web.post("/getNotesList", handler.handle_get_notes_list),
-    web.post("/removeNote", handler.handle_remove_note),
+    web.delete("/removeNote", handler.handle_remove_note),
     web.post("/login", handler.handle_login),
     web.post("/register", handler.handle_register)
 ])
