@@ -7,7 +7,7 @@ Simple hosting solutions for your notes
 * Write documentation for API
 
 ## Usage:
-* Set up MySQL
+* Set up MySQL: edit ```create_tables.py``` and **execute**
 * Install dependencies: ```pip install -r requirements.txt```
 * Run: ```python src/main.py```
 
