@@ -2,8 +2,7 @@
 Simple hosting solutions for your notes
 
 ## Future plans:
-* Add more features such as deleting notes etc.
-* Write curses-based text interface client
+* Finish curses-based text interface [client](https://github.com/synnek1337/pynotes-client)
 * Prepare a Dockerfile for easier hosting
 * Write documentation for API
 
