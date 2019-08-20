@@ -16,16 +16,6 @@ class Database():
             print(err)
         self._cursor = self.database.cursor()
 
-        # Create tables if not exists
-        self._execute_query(
-            "CREATE TABLE IF NOT EXISTS notes ("
-            "id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, "
-            "title VARCHAR(255) NOT NULL, "
-            "creation_date datetime NOT NULL, "
-            "author_id INT UNSIGNED NOT NULL, "
-            "content TEXT)", None
-        )
-
     def _execute_query(self, query, data):
         try:
             self._cursor.execute(query, data)
