@@ -18,7 +18,7 @@ class Handler():
         try:
             data = await self._json_content(request.content)
             username = data["username"]
-            password = data["password"]
+            password = Auth().generate_hash(data["password"])
             db.register(username, password)
 
         except Exception as err:
@@ -41,7 +41,7 @@ class Handler():
         try:
             data = await self._json_content(request.content)
             username = data["username"]
-            password = data["password"]
+            password = Auth().generate_hash(data["password"])
 
         except Exception as err:
             return web.json_response(
