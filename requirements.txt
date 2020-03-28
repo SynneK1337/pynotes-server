@@ -1,2 +1,2 @@
-mysql-connector
+mysql-connector-python
 aiohttp

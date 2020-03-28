@@ -1,0 +1,27 @@
+version: '2.1'
+services:
+    server:
+        build: .
+        expose: 
+            - "8080"
+        ports:
+            - "80:8080"
+        volumes:
+            - ./:/code
+        depends_on: 
+            mysql:
+                condition: service_healthy
+
+    mysql:
+        expose:
+            - "3306"
+        volumes:
+            - ./mysql-scripts:/docker-entrypoint-initdb.d/
+        image: "mysql"
+        environment:
+            MYSQL_ROOT_PASSWORD: password
+            MYSQL_DATABASE: "pynotes"
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+            timeout: 20s
+            retries: 2

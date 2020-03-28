@@ -2,7 +2,6 @@ from db import Database
 from auth import Auth
 from aiohttp import web
 from datetime import datetime, timedelta
-import functools
 import json
 
 
@@ -256,7 +255,8 @@ class Handler():
                     },  status=401
                 )
 
-db = Database("localhost", "root", "3dSynN3K", "pyNotes")
+
+db = Database("mysql", "root", "password", "pynotes")
 handler = Handler()
 
 app = web.Application()
